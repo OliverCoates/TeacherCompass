@@ -1,5 +1,7 @@
 #Teacher Compass
 #https://realpython.com/flask-google-login/
+#OliverCoates
+#17012@burnside.school.nz
 
 import json
 import os
@@ -7,7 +9,7 @@ import sqlalchemy
 
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
-from flask import render_template, redirect, request, url_for
+from flask import render_template, redirect, request, url_for, flash
 from flask_login import (
     LoginManager,
     current_user,
@@ -60,16 +62,7 @@ def get_google_provider_cfg():
 #Redirect to home page
 @app.route('/')
 def index():
-    if current_user.is_authenticated:
-        return (
-            "<p>Hello, {}! You're logged in! Email: {}</p>"
-            "<div><p>Google Profile Picture:</p>"
-            '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
-            current_user.name, current_user.email, current_user.profile_pic))
-    else:
-        return '<a class="button" href="/login">Google Login</a>'
-    ##return redirect("/home")
+    return redirect("/home")
 
 @app.route('/home')
 def home():
@@ -133,17 +126,20 @@ def callback():
         picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
     else:
+        flash('User email not available or not verified by Google')
         return "User email not available or not verified by Google.", 400
 
-    user = User.query.get(unique_id)
+    #print(" ------> ", users_email.split('@'))
+    if users_email.split('@')[1] == "burnside.school.nz":
+        user = User.query.get(unique_id)
+        if not user:
+            user = User(id=unique_id, name=users_name, email=users_email, profile_pic=picture)
+            db.session.add(user)
+            db.session.commit()
 
-    if not user:
-        user = User(id=unique_id, name=users_name, email=users_email, profile_pic=picture)
-        db.session.add(user)
-        db.session.commit()
-
-    login_user(user)
-
+        login_user(user)
+    else:
+        flash('Non-Burnside accounts are not allowed')
     return redirect('/')
 
 @app.route("/logout")

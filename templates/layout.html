@@ -4,9 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Teacher Compass</title>
+  {% block head %}
+    <title>Teacher Compass</title>
+  {% endblock %}
 </head>
+
 <body>
+
+  <!--- Flask flashing code: --->
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       <ul class=flashes>
@@ -16,6 +21,14 @@
       </ul>
     {% endif %}
   {% endwith %}
-  {% block body %}{% endblock %}
+
+  <div id="content"> {% block content %} {% endblock %} </div>
+
+  <div id="footer">
+      {% block footer %}
+      <p> Made by Oliver Coates </p>
+      {% endblock %}
+  </div>
 </body>
+
 </html>

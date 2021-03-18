@@ -1,10 +1,11 @@
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Teacher Compass</title>
-</head>
+{% block head %}
+  <title> Home - Teacher Compass </title>
+{% endblock %}
 
-<body>
+{% block content %}
+  <p> Templates are awesome! </p>
   {% if current_user.is_authenticated %}
     <p>Hello, {{current_user.name}}! You're logged in! Email: {{current_user.email}}</p>
     <div><p>Google Profile Picture:</p>
@@ -13,7 +14,4 @@
   {% else %}
     <a href="/login"> Login </a>
   {% endif %}
-
-</body>
-
-</html>
+{% endblock %}

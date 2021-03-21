@@ -3,8 +3,14 @@
 #OliverCoates
 #17012@burnside.school.nz
 
+
 import json
 import os
+
+#Install packages:
+print("Installing packages...")
+os.system("pip install -r requirements.txt -q")
+
 import sqlalchemy
 
 from flask_sqlalchemy import SQLAlchemy
@@ -61,9 +67,6 @@ def get_google_provider_cfg():
 
 #Redirect to home page
 @app.route('/')
-def index():
-    return redirect("/home")
-
 @app.route('/home')
 def home():
     return render_template('home.html')
@@ -126,8 +129,8 @@ def callback():
         picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
     else:
-        flash('User email not available or not verified by Google')
-        return "User email not available or not verified by Google.", 400
+        flash('Error: User email not available or not verified by Google')
+        return redirect('/home')
 
     #print(" ------> ", users_email.split('@'))
     if users_email.split('@')[1] == "burnside.school.nz":
@@ -146,11 +149,15 @@ def callback():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("index"))
+    return redirect('/')
 
-@app.route('/user')
+@app.route('/score')
 def user():
-    return render_template('user.html')
+    if (current_user.is_authenticated):
+        print("The user is authenticated")
+    else:
+        return redirect("/home")
+    return render_template('score.html')
 
 db.create_all()
 

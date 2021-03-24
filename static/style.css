@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind&display=swap');
+
+/* Colors!  */
+:root {
+  --c1: #FFFFFF; /* */
+  --c2: #FFFFFF; /* */
+  --c3: #FFFFFF; /* */
+  --c4: #FFFFFF; /* */
+}
+
+.compass-image {
+  width: 60%;
+  height: 60%;
+}
+
+/* Grid: */
+
+.item1 {grid-area: header;}
+.item2 {grid-area: leftspacer;}
+.item3 {grid-area: compass;}
+.item4 {grid-area: info;}
+.item5 {grid-area: rightspacer;}
+.item6 {grid-area: footer;}
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+   'header header header header header header'
+   'leftspacers compass compass info info rightspacer'
+   'footer footer footer footer footer footer';
+   grid-gap: 10px;
+   background-color: #2196F3;
+   padding: 10px;
+}
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+}

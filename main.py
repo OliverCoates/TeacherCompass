@@ -157,7 +157,7 @@ def user():
         print("The user is authenticated")
     else:
         return redirect("/home")
-    return render_template('score.html')
+    return render_template('score.html', User = current_user)
 
 db.create_all()
 

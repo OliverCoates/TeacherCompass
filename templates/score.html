@@ -5,17 +5,65 @@
 {% endblock %}
 
 {% block content %}
-  <a href="/home"> Return to homepage </a>
-
 
   <div class="grid-container">
-    <div class="item1"> This is the header </div>
-    <div class="item2"> This is the left spacer </div>
-    <div class="item3">
-      <img src="/static/compass.png" alt="compass.png" class="compass-image">
+    <!-- Header -->
+    <div class="item1">
+      <p>You are signed in, welcome {{User.name}}. <a href="/home"> Return to homepage </a> </p>
     </div>
-    <div class="item4"> This is the text </div>
-    <div class="item5"> This is the right spacer </div>
-    <div class="item6"> This is the footer </div>
+
+    <!-- Left spacer
+    <div class="item2"></div>
+     -->
+
+    <!-- Image -->
+    <div class="item3">
+      <canvas id="compassCanvas" width="1850" height="1300"
+      style="border:1px solid #c3c3c3;">
+      Your browser does not support the canvas element
+      </canvas>
+      <!-- <img src="/static/compass.png" alt="compass.png" class="compass-image">  -->
+    </div>
+
+    <!-- Text -->
+    <div class="item4">
+
+      <div class="teacherSelect">
+        <p style="display:inline"> Select a teacher: </p>  <!-- I don't know why display inline isn't working but the div can't set it so it has to be set manually -->
+        <select name="Teacher Code" value="">
+          <option value="RDS">RDS</option>
+          <option value="DFS">DFS</option>
+        </select>
+        <br>
+
+        <p style="display:inline"> X value: </p>
+        <input type="number" name="xInput" value="0" min="-10" max="10">
+
+        <p style="display:inline"> Y value: </p>
+        <input type="number" name="yInput" value="0" min="-10" max="10">
+
+        <p style="display:inline"> Z value: </p>
+        <input type="number" name="zInput" value="0" min="-10" max="10">
+
+      </div>
+
+      <br>
+      <p class="info-text"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis cursus diam,
+        quis porta urna. Sed non sodales diam. Duis finibus velit id semper consectetur.
+        Cras ullamcorper, nunc ac tempor gravida, leo neque dapibus leo, vitae sagittis lectus metus
+        at arcu. Quisque sit amet lobortis tellus. Phasellus tincidunt est ac lectus consequat,
+        vitae posuere lectus luctus. Etiam eget nisi scelerisque, convallis erat quis, rutrum dui.</p>
+    </div>
+
+    <!-- Right spacer
+
+    <div class="item5"></div>
+    -->
+
+    <!-- Footer -->
+    <div class="item6">
+      <p class="footer-text"> Made by Oliver Coates </p>
+    </div>
+    {% endblock %}
+
   </div>
-{% endblock %}

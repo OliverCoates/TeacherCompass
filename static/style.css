@@ -9,33 +9,90 @@
 }
 
 .compass-image {
-  width: 60%;
-  height: 60%;
+  width: 100%;
+  height: 100%;
+}
+
+.footer-text {
+  margin: 0px;
+  font-size: 16px;
+}
+
+.info-text {
+
+}
+
+body {
+  font-family: Hind;
 }
 
 /* Grid: */
 
-.item1 {grid-area: header;}
+.item1 {
+  grid-area: header;
+  text-align: right;
+  margin-right: 50px;
+}
 .item2 {grid-area: leftspacer;}
-.item3 {grid-area: compass;}
-.item4 {grid-area: info;}
+.item3 {
+  grid-area: compass;
+  user-drag: none;
+  user-select: none;
+  -webkit-user-drag:none;
+}
+.item4 {
+  grid-area: info;
+  font-size: 18px;
+  margin: 10px;
+}
 .item5 {grid-area: rightspacer;}
-.item6 {grid-area: footer;}
+.item6 {
+  grid-area: footer;
+  height: 60%;
+  text-align: left;
+}
+
+.teacherSelect {
+  display: inline;
+}
 
 .grid-container {
   display: grid;
   grid-template-areas:
-   'header header header header header header'
-   'leftspacers compass compass info info rightspacer'
-   'footer footer footer footer footer footer';
+   'header header header header'
+   '. compass  info  .'
+   'footer footer  footer  footer';
+   grid-template-columns: 1fr 10fr 10fr 1fr;
+   grid-template-rows: 50px auto 50px;
    grid-gap: 10px;
-   background-color: #2196F3;
-   padding: 10px;
+   /*background-color: #2196F3; */
+   padding: 5px;
 }
 
+@media screen and (max-width: 992px) {
+  .grid-container {
+    grid-template-areas:
+     'header header header header'
+     'compass compass  info info'
+     'footer footer  footer  footer';
+  }
+}
+
+@media screen and (max-width: 1076px)
+{
+  .grid-container {
+    grid-template-columns: 1fr 10fr;
+    grid-template-areas:
+     'header header'
+     'compass compass'
+     'info info'
+     'footer footer';
+  }
+}
+
+
 .grid-container > div {
-  background-color: rgba(255, 255, 255, 0.8);
-  text-align: center;
-  padding: 20px 0;
-  font-size: 30px;
+  /*background-color: rgba(255, 255, 255, 0.8);*/
+  padding: 5px;
+
 }

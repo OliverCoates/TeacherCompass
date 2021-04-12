@@ -18,36 +18,38 @@
 
     <!-- Image -->
     <div class="item3">
-      <canvas id="compassCanvas" width="1850" height="1300"
+      <canvas id="compassCanvas" width="800" height="562"
       style="border:1px solid #c3c3c3;">
       Your browser does not support the canvas element
       </canvas>
-      <!-- <img src="/static/compass.png" alt="compass.png" class="compass-image">  -->
     </div>
 
     <!-- Text -->
     <div class="item4">
+        <div class="teacherSelect">
 
-      <div class="teacherSelect">
-        <p style="display:inline"> Select a teacher: </p>  <!-- I don't know why display inline isn't working but the div can't set it so it has to be set manually -->
-        <select name="Teacher Code" value="">
-          <option value="RDS">RDS</option>
-          <option value="DFS">DFS</option>
-        </select>
-        <br>
+          <form class="teacherValueSubmit" action="/score" method="POST">
+          <p style="display:inline"> Select a teacher: </p>  <!-- I don't know why display inline isn't working but the div can't set it so it has to be set manually -->
+          <select name="Teacher Code" value="">
+            <option value="RDS">RDS</option>
+            <option value="DFS">DFS</option>
+          </select>
 
-        <p style="display:inline"> X value: </p>
-        <input type="number" name="xInput" value="0" min="-10" max="10">
+          <input type="submit" value="Submit values">
 
-        <p style="display:inline"> Y value: </p>
-        <input type="number" name="yInput" value="0" min="-10" max="10">
+          <br>
 
-        <p style="display:inline"> Z value: </p>
-        <input type="number" name="zInput" value="0" min="-10" max="10">
+          <p style="display:inline"> X value: </p>
+          <input type="number" name="xInput" value="0" min="-10" max="10" step="0.1" class="axis">
 
-      </div>
+          <p style="display:inline"> Y value: </p>
+          <input type="number" name="yInput" value="0" min="-10" max="10" step="0.1" class="axis">
 
-      <br>
+          <p style="display:inline"> Z value: </p>
+          <input type="number" name="zInput" value="0" min="-10" max="10" step="0.1" class="axis">
+
+          </form>
+        </div>
       <p class="info-text"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis cursus diam,
         quis porta urna. Sed non sodales diam. Duis finibus velit id semper consectetur.
         Cras ullamcorper, nunc ac tempor gravida, leo neque dapibus leo, vitae sagittis lectus metus
@@ -64,6 +66,58 @@
     <div class="item6">
       <p class="footer-text"> Made by Oliver Coates </p>
     </div>
-    {% endblock %}
-
   </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  console.log("here ");
+  const context = document.querySelector("#compassCanvas").getContext("2d");
+  const image = new Image();
+  image.src = "/static/compass.png";
+  image.addEventListener("load", () => {
+    context.drawImage(image, 0, 0, 800, 562);
+    axisUpdated();
+  });
+
+  function axisUpdated() {
+    context.clearRect(0, 0, 800, 562);
+    context.drawImage(image, 0, 0, 800, 562);
+    context.beginPath();
+    // arc( x value | y value | diameter | leave everything else)
+    const posX = parseFloat(document.querySelector("[name=xInput]").value) * 21.6 + 303;
+    const posY = -parseFloat(document.querySelector("[name=yInput]").value) * 21.6 + 281;
+    const posZ = parseFloat(document.querySelector("[name=zInput]").value) * 21.6 + 281;
+    context.arc(posX, posY, 5, 0, 2 * Math.PI);
+    context.arc(681, posZ, 5, 0, 2 * Math.PI);
+    context.fillStyle = 'red';
+    context.fill();
+  }
+
+  document.querySelectorAll(".axis")
+    .forEach(input => input.addEventListener("input", (event) => {
+      event.target.value = Math.round(event.target.value * 100) / 100  // Round to 2dp
+
+      if (event.target.value < -10) {
+        event.target.value = -10
+      } else if (event.target.value > 10 ){
+        event.target.value = 10
+      }
+      else if (event.target.value == '')
+      {
+        event.target.value = 0
+      }
+      axisUpdated()
+    }));
+    // .forEach((axis) => axis.addEventListener(({target}) => (
+  //   console.log(target)
+  // )));
+
+  /* var x = document.querySelector("[name=xInput]")
+  var y = document.querySelector("[name=yInput]")
+  var z = document.querySelector("[name=zInput]")
+
+  x.addEventListener("change", (event) => console.log(event.target.value))*/
+
+</script>
+{% endblock %}

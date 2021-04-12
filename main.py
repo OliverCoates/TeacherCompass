@@ -3,7 +3,6 @@
 #OliverCoates
 #17012@burnside.school.nz
 
-
 import json
 import os
 
@@ -151,12 +150,15 @@ def logout():
     logout_user()
     return redirect('/')
 
-@app.route('/score')
+@app.route('/score', methods=["GET","POST"])
 def user():
-    if (current_user.is_authenticated):
+    if current_user.is_authenticated:
         print("The user is authenticated")
     else:
         return redirect("/home")
+
+    if request.method == "POST":
+        print("Received values:")
     return render_template('score.html', User = current_user)
 
 db.create_all()

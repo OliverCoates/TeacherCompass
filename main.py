@@ -5,15 +5,15 @@
 
 import json
 import os
-
 #Install packages:
+
 print("Installing packages...")
 os.system("pip install -r requirements.txt -q")
 
 import sqlalchemy
 
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
+from flask import Flask, jsonify, abort
 from flask import render_template, redirect, request, url_for, flash
 from flask_login import (
     LoginManager,
@@ -50,10 +50,22 @@ login_manager.init_app(app)
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 class User(db.Model, UserMixin):
-    id = db.Column(db.String, primary_key = True)
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String, nullable = False)
     email = db.Column(db.String, nullable = False)
     profile_pic = db.Column(db.String)
+
+    score = db.relationship("Score", backref="user")
+
+class Score(db.Model):
+    __tablename__ = 'score'
+    id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    teacher_code = db.Column(db.String, nullable = False)
+    scoreX = db.Column(db.Integer)
+    scoreY = db.Column(db.Integer)
+    scoreZ = db.Column(db.Integer)
 
 # Flask-Login helper to retrieve a user from our db
 @login_manager.user_loader
@@ -158,8 +170,54 @@ def user():
         return redirect("/home")
 
     if request.method == "POST":
-        print("Received values:")
+        submittedX = request.form.get("xInput")
+        submittedY = request.form.get("yInput")
+        submittedZ = request.form.get("zInput")
+        teacher_code = request.form.get("TeacherCode")
+        print("Received values - X:",submittedX," Y:", submittedY," Z:", submittedZ)
+        print("Teacher code ", teacher_code)
+        print("User: ", current_user.name, " | ID: ", current_user.id)
+
+
+        # Check if score has allready been submitted by this user
+        responseMessage = ""
+        score = Score.query.filter_by(
+            teacher_code = teacher_code,
+            user         = current_user).first()
+        if score is None:
+            responseMessage = "Your values were submitted sucessfully"
+            score = Score()
+        else:
+            responseMessage = "Your values were updated sucessfully"
+        score.user = current_user
+        score.teacher_code = teacher_code
+        score.scoreX = submittedX
+        score.scoreY = submittedY
+        score.scoreZ = submittedZ
+        print("Submitting score")
+        db.session.add(score)
+        db.session.commit()
+        flash(responseMessage)
+        return redirect('/score')
+        #current_user.score
     return render_template('score.html', User = current_user)
+
+@app.route('/api/score/<string:teacher_code>')
+def api_score(teacher_code):
+    if not current_user.is_authenticated:
+        abort(401)
+    score = Score.query.filter_by(user=current_user, teacher_code=teacher_code).first()
+    if score is None:
+        return jsonify({
+            "x": 0,
+            "y": 0,
+            "z": 0
+        })
+    return jsonify({
+        "x": score.scoreX,
+        "y": score.scoreY,
+        "z": score.scoreZ
+    })
 
 db.create_all()
 

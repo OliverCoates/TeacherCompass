@@ -28,9 +28,10 @@
     <div class="item4">
         <div class="teacherSelect">
 
-          <form class="teacherValueSubmit" action="/score" method="POST">
+          <form class="teacherValueSubmit" action="/score" method="POST" novalidate>
           <p style="display:inline"> Select a teacher: </p>  <!-- I don't know why display inline isn't working but the div can't set it so it has to be set manually -->
-          <select name="Teacher Code" value="">
+
+          <select name="TeacherCode" class="teacherCodeSelect" value="">
             <option value="RDS">RDS</option>
             <option value="DFS">DFS</option>
           </select>
@@ -71,6 +72,15 @@
 
 {% block script %}
 <script>
+  function fetchValues() {
+    const teacher_code = document.querySelector(".teacherCodeSelect").value
+    fetch(`/api/score/${teacher_code}`).then((response) => console.log(response.json()));
+  }
+
+  document.querySelector(".teacherCodeSelect").addEventListener("change", fetchValues)
+  /*Call this when the script is loaded */
+  fetchValues()
+
   console.log("here ");
   const context = document.querySelector("#compassCanvas").getContext("2d");
   const image = new Image();

@@ -13,7 +13,7 @@
 <body>
 
   <!--- Flask flashing code: --->
-  {% with messages = get_flashed_messages() %}
+  {% with messages = get_flashed_messages(category_filter=['error']) %}
     {% if messages %}
       <ul class=flashes>
       {% for message in messages %}

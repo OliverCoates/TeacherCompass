@@ -67,6 +67,14 @@ class Score(db.Model):
     scoreY = db.Column(db.Integer)
     scoreZ = db.Column(db.Integer)
 
+class Teachers(db.Model):
+    __tablename__ = 'teacher'
+    id = db.Column(db.Integer, primary_key=True)
+    teacher_code = db.Column(db.String, nullable = False)
+    valueX = db.Column(db.Integer)
+    valueY = db.Column(db.Integer)
+    valueZ = db.Column(db.Integer)
+
 # Flask-Login helper to retrieve a user from our db
 @login_manager.user_loader
 def load_user(user_id):
@@ -140,7 +148,7 @@ def callback():
         picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
     else:
-        flash('Error: User email not available or not verified by Google')
+        flash('Error: User email not available or not verified by Google', 'error')
         return redirect('/home')
 
     #print(" ------> ", users_email.split('@'))
@@ -153,7 +161,7 @@ def callback():
 
         login_user(user)
     else:
-        flash('Non-Burnside accounts are not allowed')
+        flash('Non-Burnside accounts are not allowed', 'error')
     return redirect('/')
 
 @app.route("/logout")
@@ -164,43 +172,55 @@ def logout():
 
 @app.route('/score', methods=["GET","POST"])
 def user():
+    #Get all the teacher code from the database
+    # teachers = Teachers.query.all(teacher_code)
+    teachers = [teacher.teacher_code for teacher in Teachers.query.all()]
+    #teachers = Teachers.query.with_entities(Teachers.teacher_code).scaler().all()
+    print(">>> ", teachers)
+
     if current_user.is_authenticated:
         print("The user is authenticated")
     else:
         return redirect("/home")
 
     if request.method == "POST":
-        submittedX = request.form.get("xInput")
-        submittedY = request.form.get("yInput")
-        submittedZ = request.form.get("zInput")
-        teacher_code = request.form.get("TeacherCode")
-        print("Received values - X:",submittedX," Y:", submittedY," Z:", submittedZ)
-        print("Teacher code ", teacher_code)
-        print("User: ", current_user.name, " | ID: ", current_user.id)
-
-
-        # Check if score has allready been submitted by this user
-        responseMessage = ""
-        score = Score.query.filter_by(
-            teacher_code = teacher_code,
-            user         = current_user).first()
-        if score is None:
-            responseMessage = "Your values were submitted sucessfully"
-            score = Score()
+        try:
+            submittedX = int(request.form.get("xInput"))
+            submittedY = int(request.form.get("yInput"))
+            submittedZ = int(request.form.get("zInput"))
+        except ValueError:
+            flash("That is not a number", "info")
         else:
-            responseMessage = "Your values were updated sucessfully"
-        score.user = current_user
-        score.teacher_code = teacher_code
-        score.scoreX = submittedX
-        score.scoreY = submittedY
-        score.scoreZ = submittedZ
-        print("Submitting score")
-        db.session.add(score)
-        db.session.commit()
-        flash(responseMessage)
+            if (-10 <= submittedX <= 10) and (-10 <= submittedY <= 10) and (-10 <= submittedZ <= 10):
+                teacher_code = request.form.get("TeacherCode")
+                print("Received values - X:",submittedX," Y:", submittedY," Z:", submittedZ)
+                print("Teacher code ", teacher_code)
+                print("User: ", current_user.name, " | ID: ", current_user.id)
+
+                # Check if score has allready been submitted by this user
+                responseMessage = ""
+                score = Score.query.filter_by(
+                    teacher_code = teacher_code,
+                    user         = current_user).first()
+                if score is None:
+                    responseMessage = "Your values were submitted sucessfully"
+                    score = Score()
+                else:
+                    responseMessage = "Your values were updated sucessfully"
+                score.user = current_user
+                score.teacher_code = teacher_code
+                score.scoreX = submittedX
+                score.scoreY = submittedY
+                score.scoreZ = submittedZ
+                print("Submitting score")
+                db.session.add(score)
+                db.session.commit()
+                flash(responseMessage, 'info')
+            else:
+                flash("Number not within valid range", "info")
         return redirect('/score')
         #current_user.score
-    return render_template('score.html', User = current_user)
+    return render_template('score.html', teachers = teachers)
 
 @app.route('/api/score/<string:teacher_code>')
 def api_score(teacher_code):

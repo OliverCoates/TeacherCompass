@@ -5,13 +5,94 @@
 {% endblock %}
 
 {% block content %}
-  {% if current_user.is_authenticated %}
-    <p>Hello, {{current_user.name}}! You're logged in! Email: {{current_user.email}}</p>
-    <div><p>Google Profile Picture:</p>
-    <img src="{{current_user.profile_pic}}" alt="Google profile pic"></img></div>
-    <a class="button" href="/logout">Logout</a>
-    <a href="/score"> Submit your own values </a>
-  {% else %}
-    <a href="/login"> Login </a>
-  {% endif %}
+
+  <div class="grid-container">
+    <!-- Header -->
+
+    <div class="item1">
+    {% if current_user.is_authenticated %}
+      <p>Hello, {{current_user.name}}! You're logged in! Email: {{current_user.email}}
+      <img width="25px" height="25px" src="{{current_user.profile_pic}}" alt="Google profile pic"></img>
+      <a class="button" href="/logout">Logout</a>
+      <a href="/score"> Submit your own values </a> </p>
+    {% else %}
+      <p> Please log in to submit your own values: <a href="/login"> Login </a> </p>
+    {% endif %}
+    </div>
+
+    <!-- Left spacer
+    <div class="item2"></div>
+     -->
+
+    <!-- Image -->
+    <div class="item3">
+      <canvas id="compassCanvas" width="800" height="562"
+      style="border:1px solid #c3c3c3;">
+      Your browser does not support the canvas element
+      </canvas>
+    </div>
+
+    <!-- Text -->
+    <div class="item4">
+      <p class="info-text"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis cursus diam,
+        quis porta urna. Sed non sodales diam. Duis finibus velit id semper consectetur.
+        Cras ullamcorper, nunc ac tempor gravida, leo neque dapibus leo, vitae sagittis lectus metus
+        at arcu. Quisque sit amet lobortis tellus. Phasellus tincidunt est ac lectus consequat,
+        vitae posuere lectus luctus. Etiam eget nisi scelerisque, convallis erat quis, rutrum dui.</p>
+    </div>
+
+    <!-- Right spacer
+
+    <div class="item5"></div>
+    -->
+
+    <!-- Footer -->
+    <div class="item6">
+      <p class="footer-text"> Made by Oliver Coates (approved by Jayden Ling)</p>
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  var teacher_averages = {{teacher_averages|safe}}
+
+  console.log("here ");
+  const context = document.querySelector("#compassCanvas").getContext("2d");
+  const image = new Image();
+  image.src = "/static/compass.png";
+  image.addEventListener("load", () => {
+    context.drawImage(image, 0, 0, 800, 562);
+    axisUpdated();
+  });
+
+  function axisUpdated()  {
+    context.clearRect(0, 0, 800, 562);
+    context.drawImage(image, 0, 0, 800, 562);
+
+    for([key, val] of Object.entries(teacher_averages)) {
+      console.log(key, val);
+      context.beginPath();
+
+      const posX = parseFloat(val[0]) * 21.6 + 303;
+      const posY = -parseFloat(val[1]) * 21.6 + 281;
+      const posZ = parseFloat(val[2]) * 21.6 + 281;
+      context.fillStyle = 'red';
+
+      context.font = "15px Arial"
+
+      context.arc(posX , posY , 5, 0, 2 * Math.PI);
+      context.fillText(key, posX + 10, posY + 5);
+      context.arc(664, posZ, 5, 0, 2 * Math.PI);
+      context.fillText(key, 674, posZ + 5);
+
+      context.fill();
+    }
+  };
+
+  function drawPositions()  {
+
+    console.log(">>> ", teacher);
+  };
+</script>
 {% endblock %}

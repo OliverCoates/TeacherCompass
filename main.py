@@ -62,7 +62,7 @@ class Score(db.Model):
     __tablename__ = 'score'
     id = db.Column(db.Integer, primary_key = True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    teacher_code = db.Column(db.String, nullable = False)
+    teacher_code = db.Column(db.String, db.ForeignKey('teacher.teacher_code'), nullable = False)
     scoreX = db.Column(db.Integer)
     scoreY = db.Column(db.Integer)
     scoreZ = db.Column(db.Integer)
@@ -71,9 +71,28 @@ class Teachers(db.Model):
     __tablename__ = 'teacher'
     id = db.Column(db.Integer, primary_key=True)
     teacher_code = db.Column(db.String, nullable = False)
-    valueX = db.Column(db.Integer)
-    valueY = db.Column(db.Integer)
-    valueZ = db.Column(db.Integer)
+    # valueX = db.Column(db.Integer)
+    # valueY = db.Column(db.Integer)
+    # valueZ = db.Column(db.Integer)
+
+    scores = db.relationship("Score", backref="teacher")
+
+    @property
+    def valueX(self):
+        scoresX = [score.scoreX for score in self.scores]
+        return sum(scoresX) / len(scoresX)
+
+    @property
+    def valueY(self):
+        scoresY = [score.scoreY for score in self.scores]
+        return sum(scoresY) / len(scoresY)
+
+    @property
+    def valueZ(self):
+        scoresZ = [score.scoreZ for score in self.scores]
+        return sum(scoresZ) / len(scoresZ)
+
+
 
 # Flask-Login helper to retrieve a user from our db
 @login_manager.user_loader
@@ -88,7 +107,14 @@ def get_google_provider_cfg():
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    print(Teachers.query.filter_by(teacher_code = "DFS").first().valueX)
+    teacher_averages = {}
+    for teacher in Teachers.query.all():
+        teacher_averages[teacher.teacher_code] = [teacher.valueX, teacher.valueY, teacher.valueZ]
+
+    # teachers = {teacher.teacher_code: (teacher.valueX, teacher.valueY, teacher.valueX) for teachers}
+    return render_template('home.html', teacher_averages=teacher_averages)
+
 
 @app.route('/login')
 def login():
@@ -176,7 +202,7 @@ def user():
     # teachers = Teachers.query.all(teacher_code)
     teachers = [teacher.teacher_code for teacher in Teachers.query.all()]
     #teachers = Teachers.query.with_entities(Teachers.teacher_code).scaler().all()
-    print(">>> ", teachers)
+    #print(">>> ", teachers)
 
     if current_user.is_authenticated:
         print("The user is authenticated")

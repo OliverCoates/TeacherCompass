@@ -80,17 +80,17 @@ class Teachers(db.Model):
     @property
     def valueX(self):
         scoresX = [score.scoreX for score in self.scores]
-        return sum(scoresX) / len(scoresX)
+        return 0 if len(scoresX) == 0 else (sum(scoresX) / len(scoresX))
 
     @property
     def valueY(self):
         scoresY = [score.scoreY for score in self.scores]
-        return sum(scoresY) / len(scoresY)
+        return 0 if len(scoresY) == 0 else (sum(scoresY) / len(scoresY))
 
     @property
     def valueZ(self):
         scoresZ = [score.scoreZ for score in self.scores]
-        return sum(scoresZ) / len(scoresZ)
+        return 0 if len(scoresZ) == 0 else (sum(scoresZ) / len(scoresZ))
 
 
 

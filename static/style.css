@@ -23,6 +23,11 @@
 
 }
 
+.info-text-bulletpoint {
+  margin-bottom: 0em;
+  margin-top: 0em;
+}
+
 body {
   font-family: Hind;
 }

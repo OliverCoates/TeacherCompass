@@ -13,7 +13,7 @@ os.system("pip install -r requirements.txt -q")
 import sqlalchemy
 
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, jsonify, abort
+from flask import Flask, jsonify, abort, g
 from flask import render_template, redirect, request, url_for, flash
 from flask_login import (
     LoginManager,
@@ -107,13 +107,14 @@ def get_google_provider_cfg():
 @app.route('/')
 @app.route('/home')
 def home():
-    print(Teachers.query.filter_by(teacher_code = "DFS").first().valueX)
+    #print(Teachers.query.filter_by(teacher_code = "DFS").first().valueX)
     teacher_averages = {}
+    teachers = [teacher.teacher_code for teacher in Teachers.query.all()]
     for teacher in Teachers.query.all():
         teacher_averages[teacher.teacher_code] = [teacher.valueX, teacher.valueY, teacher.valueZ]
 
     # teachers = {teacher.teacher_code: (teacher.valueX, teacher.valueY, teacher.valueX) for teachers}
-    return render_template('home.html', teacher_averages=teacher_averages)
+    return render_template('home.html', teachers = teachers, teacher_averages=teacher_averages)
 
 
 @app.route('/login')
@@ -211,11 +212,15 @@ def user():
 
     if request.method == "POST":
         try:
-            submittedX = int(request.form.get("xInput"))
-            submittedY = int(request.form.get("yInput"))
-            submittedZ = int(request.form.get("zInput"))
+            print("Requesting values...")
+            submittedX = float(request.form.get("xInput"))
+            print("X: ", submittedX)
+            submittedY = float(request.form.get("yInput"))
+            print("Y: ", submittedY)
+            submittedZ = float(request.form.get("zInput"))
+            print("Z: ", submittedZ)
         except ValueError:
-            flash("That is not a number", "info")
+            flash("Error, That was not detected as a number", "info")
         else:
             if (-10 <= submittedX <= 10) and (-10 <= submittedY <= 10) and (-10 <= submittedZ <= 10):
                 teacher_code = request.form.get("TeacherCode")

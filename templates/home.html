@@ -33,7 +33,16 @@
     </div>
 
     <!-- Text -->
+    <p>
     <div class="item4">
+      <select name="TeacherCode" class="teacherCodeSelect" value="">
+        {% for teacher in teachers %}
+          <option value="{{teacher}}">{{teacher}}</option>
+        {%endfor%}
+      </select>
+      <input type="checkbox" id="teacherCheckbox" name="" value="">
+      Filter by teacher<p>
+
       <p class="info-text"> Welcome to the Burnside teacher compass. This is a web app which
         allows students to democratically vote on their teacher's teaching style. This is the
         homepage which displays the <b>average</b> rating for all teachers. If you would like to
@@ -75,6 +84,7 @@
   var teacher_averages = {{teacher_averages|safe}}
 
   console.log("here ");
+
   const context = document.querySelector("#compassCanvas").getContext("2d");
   const image = new Image();
   image.src = "/static/compass.png";

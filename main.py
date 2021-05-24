@@ -128,7 +128,8 @@ def login():
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
         redirect_uri=request.base_url + "/callback",
-        scope=["openid", "email", "profile"], )
+        scope=["openid", "email", "profile"],
+        prompt='consent')
 
     return redirect(request_uri)
 

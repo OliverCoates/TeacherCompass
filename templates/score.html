@@ -131,7 +131,7 @@
     /*console.log("x: " + x + " y: " + y)*/
     if (x > 88 && x < 520 && y > 66 && y < 497)
     {
-      document.querySelector("[name=xInput]").value = Math.round(((((x - 88) - 216 ) / 216) * 10) * 100) / 100;
+      document.querySelector("[name=xInput]").value = Math.round(((((x - 88) - 216 ) / 216) * 10) * 100) / 100; // Thos works fine
       document.querySelector("[name=yInput]").value = -(Math.round(((((y - 66) - 216 ) / 216) * 10) * 100) / 100)
     }
 
@@ -139,6 +139,12 @@
     {
       document.querySelector("[name=zInput]").value = (Math.round(((((y - 66) - 216) / 216) * 10) * 100) / 100);
     }
+
+    // Round:
+    //document.querySelectorAll(".axis").forEach(item => {
+    //  item.value = Math.round(item.value * 100) / 100;  // Round to 2dp
+    //});
+
 
     axisUpdated();
   }
@@ -150,7 +156,7 @@
 
   document.querySelector(".teacherCodeSelect").addEventListener("change", fetchValues)
 
-  console.log("here ");
+  /*console.log("here "); */
   const context = document.querySelector("#compassCanvas").getContext("2d");
   const image = new Image();
   image.src = "/static/compass.png";
@@ -160,12 +166,12 @@
   });
 
   function axisUpdated() {
-    console.log("2")
+    /*console.log("2") */
     context.clearRect(0, 0, 800, 562);
     context.drawImage(image, 0, 0, 800, 562);
     if (document.querySelector(".teacherCodeSelect").selectedIndex != 0)
     {
-      console.log("Test");
+      /*console.log("Test"); */
       context.beginPath();
       // arc( x value | y value | diameter | leave everything else)
       const posX = parseFloat(document.querySelector("[name=xInput]").value) * 21.6 + 303;
@@ -181,17 +187,18 @@
 
   document.querySelectorAll(".axis")
     .forEach(input => input.addEventListener("input", (event) => {
-      event.target.value = Math.round(event.target.value * 100) / 100  // Round to 2dp
+      /* event.target.value = Math.round(event.target.value * 100) / 100  // Round to 2dp */
 
       if (event.target.value < -10) {
         event.target.value = -10
       } else if (event.target.value > 10 ){
         event.target.value = 10
       }
-      else if (event.target.value == '')
+
+      /*else if (event.target.value == '')
       {
         event.target.value = 0
-      }
+      } */
       axisUpdated()
     }));
 

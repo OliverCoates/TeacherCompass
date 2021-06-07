@@ -113,6 +113,7 @@ def home():
     for teacher in Teachers.query.all():
         teacher_averages[teacher.teacher_code] = [teacher.valueX, teacher.valueY, teacher.valueZ]
 
+
     # teachers = {teacher.teacher_code: (teacher.valueX, teacher.valueY, teacher.valueX) for teachers}
     return render_template('home.html', teachers = teachers, teacher_averages=teacher_averages)
 

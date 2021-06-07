@@ -11,10 +11,11 @@
 
     <div class="item1">
     {% if current_user.is_authenticated %}
-      <p>Hello, {{current_user.name}}! You're logged in! Email: {{current_user.email}}
-      <img width="25px" height="25px" src="{{current_user.profile_pic}}" alt="Google profile pic"></img>
+      <p>Hello, {{current_user.name}}!
+      <img width="28px" height="28px" src="{{current_user.profile_pic}}" alt="Google profile pic"></img>
+      You're logged in!
       <a class="button" href="/logout">Logout</a>
-      <a href="/score"> Submit your own values </a> </p>
+      <a href="/score"> Submit your own values </a>   </p>
     {% else %}
       <p> Please log in to submit your own values: <a href="/login"> Login </a> </p>
     {% endif %}
@@ -40,7 +41,7 @@
           <option value="{{teacher}}">{{teacher}}</option>
         {%endfor%}
       </select>
-      <input type="checkbox" id="teacherCheckbox" name="" value="">
+      <input type="checkbox" id="teacherCheckbox" onchange="filterbyteacher(this)">
       Filter by teacher<p>
 
       <p class="info-text"> Welcome to the Burnside teacher compass. This is a web app which
@@ -83,7 +84,13 @@
 <script>
   var teacher_averages = {{teacher_averages|safe}}
 
-  console.log("here ");
+  function filterbyteacher(obj) {
+    if( obj.is(":checked")){
+      console.log("checked");
+    } else {
+      console.log("unchecked");
+    }
+  }
 
   const context = document.querySelector("#compassCanvas").getContext("2d");
   const image = new Image();
@@ -98,7 +105,7 @@
     context.drawImage(image, 0, 0, 800, 562);
 
     for([key, val] of Object.entries(teacher_averages)) {
-      console.log(key, val);
+      {# console.log(key, val); #}
       context.beginPath();
 
       const posX = parseFloat(val[0]) * 21.6 + 303;

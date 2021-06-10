@@ -197,7 +197,7 @@ def callback():
 @login_required
 def logout():
     logout_user()
-    return redirect('/')
+    return redirect('https://mail.google.com/mail/u/0/?logout&hl=en')
 
 @app.route('/score', methods=["GET","POST"])
 def user():

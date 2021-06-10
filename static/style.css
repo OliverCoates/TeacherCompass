@@ -1,12 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Hind&display=swap');
 
-/* Colors!  */
-:root {
-  --c1: #FFFFFF; /* */
-  --c2: #FFFFFF; /* */
-  --c3: #FFFFFF; /* */
-  --c4: #FFFFFF; /* */
-}
+/* Colors are imported from another style sheet based upon color theme  */
 
 .compass-image {
   width: 100%;
@@ -19,9 +13,6 @@
   font-size: 16px;
 }
 
-.info-text {
-
-}
 
 .info-text-bulletpoint {
   margin-bottom: 0em;
@@ -30,15 +21,33 @@
 
 body {
   font-family: Hind;
+  background-color: var(--c_background);
 }
 
 /* Grid: */
 
 .item1 {
   grid-area: header;
-  text-align: right;
-  margin-right: 50px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  color: var(--c_headText);
+
+  margin-left: 40px;
+  margin-right: 15px;
 }
+/* header stuff: */
+.navbar-title {
+  text-align: left;
+  font-size: 35px;
+}
+
+.navbar-subtext {
+  text-align: right;
+}
+/* ------------- */
+
 .item2 {grid-area: leftspacer;}
 .item3 {
   grid-area: compass;
@@ -50,10 +59,12 @@ body {
   grid-area: info;
   font-size: 18px;
   margin: 10px;
+  color: var(--c_text);
 }
 .item5 {grid-area: rightspacer;}
 .item6 {
   grid-area: footer;
+  color: var(--c_text);
   height: 60%;
   text-align: left;
 }
@@ -74,6 +85,8 @@ body {
    /*background-color: #2196F3; */
    padding: 5px;
 }
+
+/* Grid screensize reactions */
 
 @media screen and (max-width: 992px) {
   .grid-container {
@@ -98,7 +111,6 @@ body {
 
 
 .grid-container > div {
-  /*background-color: rgba(255, 255, 255, 0.8);*/
   padding: 5px;
 
 }

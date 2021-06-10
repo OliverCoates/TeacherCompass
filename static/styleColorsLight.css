@@ -3,5 +3,6 @@
   --c_background: #e8e9ec; /* Background color*/
   --c_headText: #2d539e; /* Header text color*/
   --c_text: #262a3f; /* Small text color*/
-  --c4: #FFFFFF; /* */
+  --c_backgroundLight: #cccdcf; /* */
+  --c_red: #cc517a;
 }

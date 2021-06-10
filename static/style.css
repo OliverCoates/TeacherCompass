@@ -8,6 +8,24 @@
   border: red solid 10px;
 }
 
+.linkButton {
+  display: inline-block;
+  line-height: 1;
+  border-width: 1px;
+  padding: 4px;
+  border-radius: 2px;
+  border-style: solid;
+  border-color: var(--c_text);
+  background-color: var(--c_backgroundLight);
+  color:var(--c_headText);
+  text-decoration: none;
+  cursor:link;
+}
+
+.linkButton:hover {
+  color: var(--c_red);
+}
+
 .footer-text {
   margin: 0px;
   font-size: 16px;
@@ -28,6 +46,11 @@ body {
 
 .item1 {
   grid-area: header;
+
+  padding-bottom: 20px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: var(--c_headText);
 
   display: flex;
   justify-content: space-between;
@@ -83,7 +106,8 @@ body {
    grid-template-rows: 50px auto 50px;
    grid-gap: 10px;
    /*background-color: #2196F3; */
-   padding: 5px;
+   /*padding: 5px;*/
+
 }
 
 /* Grid screensize reactions */
@@ -111,6 +135,6 @@ body {
 
 
 .grid-container > div {
-  padding: 5px;
+  /*padding: 5px; */
 
 }

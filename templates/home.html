@@ -24,7 +24,7 @@
     <!-- Image -->
     <div class="item3">
       <canvas id="compassCanvas" width="800" height="562"
-      style="border:1px solid #c3c3c3;">
+      style="border:0px;">
       Your browser does not support the canvas element
       </canvas>
     </div>
@@ -32,12 +32,12 @@
     <!-- Text -->
     <p>
     <div class="item4">
-      <select name="TeacherCode" class="teacherCodeSelect" value="">
+      <select name="TeacherCode" id="teacherFilerBy" onchange="axisUpdated()" class="teacherCodeSelect" value="">
         {% for teacher in teachers %}
           <option value="{{teacher}}">{{teacher}}</option>
         {%endfor%}
       </select>
-      <input type="checkbox" id="teacherCheckbox" onchange="filterbyteacher(this)">
+      <input type="checkbox" id="teacherCheckbox" onchange="axisUpdated()">
       Filter by teacher<p>
 
       <p class="info-text"> Welcome to the Burnside teacher compass. This is a web app which
@@ -71,7 +71,7 @@
 
     <!-- Footer -->
     <div class="item6">
-      <p class="footer-text"> Made by Oliver Coates (approved by Jayden Ling)</p>
+      <p class="footer-text"> Made by Oliver Coates. Please contact 17012@burnside.school.nz with any requests or questions</p>
     </div>
   </div>
 {% endblock %}
@@ -79,14 +79,6 @@
 {% block script %}
 <script>
   var teacher_averages = {{teacher_averages|safe}}
-
-  function filterbyteacher(obj) {
-    if( obj.is(":checked")){
-      console.log("checked");
-    } else {
-      console.log("unchecked");
-    }
-  }
 
   const context = document.querySelector("#compassCanvas").getContext("2d");
   const image = new Image();
@@ -100,24 +92,44 @@
     context.clearRect(0, 0, 800, 562);
     context.drawImage(image, 0, 0, 800, 562);
 
-    for([key, val] of Object.entries(teacher_averages)) {
-      {# console.log(key, val); #}
-      context.beginPath();
+    if (document.querySelector("[id=teacherCheckbox]").checked) {
+      const reqTeacherCode = document.querySelector("[id=teacherFilerBy]").value;
+      const teacherValues = teacher_averages[reqTeacherCode];
 
-      const posX = parseFloat(val[0]) * 21.6 + 303;
-      const posY = -parseFloat(val[1]) * 21.6 + 281;
-      const posZ = parseFloat(val[2]) * 21.6 + 281;
+      context.beginPath();
+      const posX = parseFloat(teacherValues[0]) * 21.6 + 303;
+      const posY = -parseFloat(teacherValues[1]) * 21.6 + 281;
+      const posZ = parseFloat(teacherValues[2]) * 21.6 + 281;
       context.fillStyle = 'red';
 
-      context.font = "15px Arial"
-
+      context.font = "15px Arial";
       context.arc(posX , posY , 5, 0, 2 * Math.PI);
-      context.fillText(key, posX + 10, posY + 5);
+      context.fillText(reqTeacherCode, posX + 10, posY + 5);
       context.arc(664, posZ, 5, 0, 2 * Math.PI);
-      context.fillText(key, 674, posZ + 5);
+      context.fillText(reqTeacherCode, 674, posZ + 5);
 
       context.fill();
+    } else {
+      // Draw all the teachers on the canvas
+      for([key, val] of Object.entries(teacher_averages)) {
+        {# console.log(key, val); #}
+        context.beginPath();
+
+        const posX = parseFloat(val[0]) * 21.6 + 303;
+        const posY = -parseFloat(val[1]) * 21.6 + 281;
+        const posZ = parseFloat(val[2]) * 21.6 + 281;
+        context.fillStyle = 'red';
+
+        context.font = "15px Arial";
+        context.arc(posX , posY , 5, 0, 2 * Math.PI);
+        context.fillText(key, posX + 10, posY + 5);
+        context.arc(664, posZ, 5, 0, 2 * Math.PI);
+        context.fillText(key, 674, posZ + 5);
+
+        context.fill();
+      }
     }
+
   };
 
   function drawPositions()  {

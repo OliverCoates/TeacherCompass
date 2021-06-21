@@ -1,0 +1,16 @@
+/* Colors!  */
+
+/*
+
+https://coolors.co/f6bcbd-99d9f6-ccdec9-f1f1af-35363a-2264aa-6596cd-f5f4f5-886e78-937b84
+
+*/
+:root {
+  --img_compass: /static/compassDark.png;
+  --c_background: #35363A; /* Background color*/
+  --c_headText: #2264AA; /* Header text color*/
+  --c_text: #DADCE0; /* Small text color*/
+  --c_backgroundLight: #303236; /* Link button lightup */
+  --c_red: #A54657;
+  --c_draw: #CC474B;
+}

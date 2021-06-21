@@ -2,6 +2,7 @@
 
 {% block head %}
   <title> Home - Teacher Compass </title>
+  <link id="pageColors" href="" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -11,9 +12,9 @@
 
     <div class="item1">
     {% if current_user.is_authenticated %}
-      <div class="navbar-title">The Definitive Teacher Compass</div> <div class="navbar-subtext">You are signed in, welcome {{current_user.name}}. <a class="linkButton" href="/score"> Submit your own values </a>   <a class="linkButton" href="/logout">Logout</a> </div>
+      <div class="navbar-title">The Definitive Teacher Compass</div> <div class="navbar-subtext">You are signed in, welcome {{current_user.name}} <a class="linkButton" onclick="changeTheme()"> Change theme </a> <a class="linkButton" href="/score"> Submit your own values </a>   <a class="linkButton" href="/logout">Logout</a> </div>
     {% else %}
-      <div class="navbar-title">The Definitive Teacher Compass</div> <div class="navbar-subtext"> Please log in to submit your own values. <a class="linkButton" href="/login">Login</a> </div>
+      <div class="navbar-title">The Definitive Teacher Compass</div> <div class="navbar-subtext"> Please log in to submit your own values <a class="linkButton" href="/login">Login</a> </div>
     {% endif %}
     </div>
 
@@ -78,11 +79,16 @@
 
 {% block script %}
 <script>
+  const drawColor = () => getComputedStyle(document.documentElement).getPropertyValue('--c_draw');
+  const compassImage = () => getComputedStyle(document.documentElement).getPropertyValue('--img_compass');
+
+  console.log(getComputedStyle(document.documentElement).getPropertyValue("--c_draw") );
+
   var teacher_averages = {{teacher_averages|safe}}
 
   const context = document.querySelector("#compassCanvas").getContext("2d");
   const image = new Image();
-  image.src = "/static/compass.png";
+  image.src = compassImage().trim();
   image.addEventListener("load", () => {
     context.drawImage(image, 0, 0, 800, 562);
     axisUpdated();
@@ -90,6 +96,7 @@
 
   function axisUpdated()  {
     context.clearRect(0, 0, 800, 562);
+    console.log("drawing image: ", image);
     context.drawImage(image, 0, 0, 800, 562);
 
     if (document.querySelector("[id=teacherCheckbox]").checked) {
@@ -100,7 +107,7 @@
       const posX = parseFloat(teacherValues[0]) * 21.6 + 303;
       const posY = -parseFloat(teacherValues[1]) * 21.6 + 281;
       const posZ = parseFloat(teacherValues[2]) * 21.6 + 281;
-      context.fillStyle = 'red';
+      context.fillStyle = drawColor();
 
       context.font = "15px Arial";
       context.arc(posX , posY , 5, 0, 2 * Math.PI);
@@ -118,7 +125,7 @@
         const posX = parseFloat(val[0]) * 21.6 + 303;
         const posY = -parseFloat(val[1]) * 21.6 + 281;
         const posZ = parseFloat(val[2]) * 21.6 + 281;
-        context.fillStyle = 'red';
+        context.fillStyle = drawColor();
 
         context.font = "15px Arial";
         context.arc(posX , posY , 5, 0, 2 * Math.PI);
@@ -136,5 +143,27 @@
 
     console.log(">>> ", teacher);
   };
+
+  // THEME:
+
+  function changeTheme() {
+      // theme = theme === 'light' ? 'dark' : 'light'
+      if (localStorage.getItem('theme') === 'dark') {
+        localStorage.setItem('theme', 'light')
+      } else {
+        localStorage.setItem('theme', 'dark')
+      }
+
+      setTheme()
+  }
+  function setTheme() {
+    let stylesheet = "/static/styleColorsLight.css";  // Light theme is default
+    if (localStorage.getItem('theme') == 'dark') stylesheet = "/static/styleColorsDark.css";
+    document.getElementById("pageColors").setAttribute("href", stylesheet);
+    axisUpdated()
+  }
+  window.addEventListener("onLoad", setTheme() );
+
+  // --------------------
 </script>
 {% endblock %}

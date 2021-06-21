@@ -11,19 +11,20 @@
 .linkButton {
   display: inline-block;
   line-height: 1;
-  border-width: 1px;
+  border-width: 0px;
   padding: 4px;
-  border-radius: 2px;
+  border-radius: 4px;
   border-style: solid;
-  border-color: var(--c_text);
-  background-color: var(--c_backgroundLight);
-  color:var(--c_headText);
+
+
+  color: var(--c_red);
   text-decoration: none;
   cursor:link;
 }
 
 .linkButton:hover {
-  color: var(--c_red);
+
+  background-color: var(--c_backgroundLight);
 }
 
 .footer-text {

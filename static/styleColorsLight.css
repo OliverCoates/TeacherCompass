@@ -1,8 +1,10 @@
 /* Colors!  */
 :root {
+  --img_compass: /static/compass.png;
   --c_background: #e8e9ec; /* Background color*/
   --c_headText: #2d539e; /* Header text color*/
   --c_text: #262a3f; /* Small text color*/
   --c_backgroundLight: #cccdcf; /* */
   --c_red: #cc517a;
+  --c_draw: #CC474B;
 }

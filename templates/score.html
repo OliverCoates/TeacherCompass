@@ -2,6 +2,7 @@
 
 {% block head %}
   <title> Home - Teacher Compass </title>
+  <link id="pageColors" href="" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -9,7 +10,7 @@
   <div class="grid-container">
     <!-- Header -->
     <div class="item1">
-        <div class="navbar-title">The Definitive Teacher Compass</div> <div class="navbar-subtext">You are signed in, welcome {{current_user.name}}. <a class="linkButton" href="/home"> Return to homepage </a> <a class="linkButton" href="/logout">Logout</a></div>
+        <div class="navbar-title">The Definitive Teacher Compass</div> <div class="navbar-subtext">You are signed in, welcome {{current_user.name}} <a class="linkButton" onclick="changeTheme()"> Change theme </a> <a class="linkButton" href="/home"> Return to homepage </a> <a class="linkButton" href="/logout">Logout</a></div>
     </div>
 
     <!-- Left spacer
@@ -68,7 +69,7 @@
         </div>
       <p class="info-text"> Welcome to the Burnside teacher compass. On this page you can select
         a teacher and rate them. To return to the main page, click on the link in the top right corner.</p>
-      <br>
+
       <p class="info-text"> <b>X axis:</b> </p>
       <ul>
         <li>More caring: Viewed as more compassionate. You could probably confide and have more casual conversations with them.</li>
@@ -77,14 +78,20 @@
 
       <p class="info-text"> <b>Y axis:</b> </p>
       <ul>
-        <li>Authority: More strict around school guidelines and following directives from the higher ups. Not to be confused with punitive as strict teachers can still be nice. No-nonsense approach to learning. Not someone you would tell a joke to.</li>
-        <li>Relaxed: Less strict around school guidelines. More lenient, especially around minor uniform infractions or being minorly late. Are less controlling over student approaches to learning.</li>
+        <li>Authority: More strict around school guidelines and following directives from the higher ups. Not to be confused
+          with punitive as strict teachers can still be nice. No-nonsense approach to learning. Not someone you would tell a joke to.</li>
+        <li>Relaxed: Less strict around school guidelines. More lenient, especially around minor uniform infractions or being minorly
+          late. Are less controlling over student approaches to learning.</li>
       </ul>
 
       <p class="info-text"> <b>Z axis:</b> </p>
       <ul>
-        <li>Self-directed learning: Less input and control over the path of lessons. Typically more flexible on lessons and time dedicated to certain topics. Class time is more student oriented with plenty of time for students to discuss and individually research. The teacher generally hovers around the class giving assistance to students when it is needed.</li>
-        <li>Directed learning: More input and control over the path of lessons. Less flexible on lessons and time dedicated to certain topics. Class time is teacher oriented with the teacher walking the class through concepts. Little or no time is given to student discussion and individual tasks.</li>
+        <li>Self-directed learning: Less input and control over the path of lessons. Typically more flexible on lessons and time
+          dedicated to certain topics. Class time is more student oriented with plenty of time for students to discuss and individually
+          research. The teacher generally hovers around the class giving assistance to students when it is needed.</li>
+        <li>Directed learning: More input and control over the path of lessons. Less flexible on lessons and time dedicated to certain
+          topics. Class time is teacher oriented with the teacher walking the class through concepts. Little or no time is given to
+          student discussion and individual tasks.</li>
       </ul>
     </div>
 
@@ -102,6 +109,13 @@
 
 {% block script %}
 <script>
+  const drawColor = () => getComputedStyle(document.documentElement).getPropertyValue('--c_draw')
+  const compassImage = () => getComputedStyle(document.documentElement).getPropertyValue('--img_compass')
+
+  window.addEventListener('load', () => {
+    console.log(compassImage());
+  })
+
   function fetchValues() {
     /* Ask the database for the x, y and z values for the newly selected teacher code */
     if (document.querySelector(".teacherCodeSelect").selectedIndex != 0)
@@ -145,18 +159,7 @@
       {
         document.querySelector("[name=zInput]").value = ((((y - 66) - 216) / 216) * 10).toFixed(2);
       }
-
-
-
     }
-
-
-    // Round:
-    //document.querySelectorAll(".axis").forEach(item => {
-    //  item.value = Math.round(item.value * 100) / 100;  // Round to 2dp
-    //});
-
-
     axisUpdated();
   }
 
@@ -170,14 +173,17 @@
   /*console.log("here "); */
   const context = document.querySelector("#compassCanvas").getContext("2d");
   const image = new Image();
-  image.src = "/static/compass.png";
-  image.addEventListener("load", () => {
-    context.drawImage(image, 0, 0, 800, 562);
-    axisUpdated();
-  });
+  window.addEventListener('load', () => {
+    image.src = compassImage();
+    image.addEventListener("load", () => {
+      context.drawImage(image, 0, 0, 800, 562);
+      axisUpdated();
+    });
+  })
 
   function axisUpdated() {
     /*console.log("2") */
+    image.src = compassImage();
     context.clearRect(0, 0, 800, 562);
     context.drawImage(image, 0, 0, 800, 562);
     if (document.querySelector(".teacherCodeSelect").selectedIndex != 0)
@@ -190,7 +196,7 @@
       const posZ = parseFloat(document.querySelector("[name=zInput]").value) * 21.6 + 281;
       context.arc(posX, posY, 5, 0, 2 * Math.PI);
       context.arc(681, posZ, 5, 0, 2 * Math.PI);
-      context.fillStyle = 'red';
+      context.fillStyle = drawColor();
       context.fill();
     }
 
@@ -213,5 +219,27 @@
       axisUpdated()
     }));
 
+
+    // THEME:
+
+    function changeTheme() {
+        // theme = theme === 'light' ? 'dark' : 'light'
+        if (localStorage.getItem('theme') === 'dark') {
+          localStorage.setItem('theme', 'light')
+        } else {
+          localStorage.setItem('theme', 'dark')
+        }
+
+        setTheme()
+    }
+    function setTheme() {
+      let stylesheet = "/static/styleColorsLight.css";  // Light theme is default
+      if (localStorage.getItem('theme') == 'dark') stylesheet = "/static/styleColorsDark.css";
+      document.getElementById("pageColors").setAttribute("href", stylesheet);
+      axisUpdated()
+    }
+    window.addEventListener("onLoad", setTheme() );
+
+    // --------------------
 </script>
 {% endblock %}

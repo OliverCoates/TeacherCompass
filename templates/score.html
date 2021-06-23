@@ -113,7 +113,7 @@
   const compassImage = () => getComputedStyle(document.documentElement).getPropertyValue('--img_compass')
 
   window.addEventListener('load', () => {
-    console.log(compassImage());
+    //console.log(compassImage());
   })
 
   function fetchValues() {
@@ -223,18 +223,17 @@
     // THEME:
 
     function changeTheme() {
-        // theme = theme === 'light' ? 'dark' : 'light'
         if (localStorage.getItem('theme') === 'dark') {
           localStorage.setItem('theme', 'light')
         } else {
           localStorage.setItem('theme', 'dark')
         }
-
         setTheme()
     }
     function setTheme() {
       let stylesheet = "/static/styleColorsLight.css";  // Light theme is default
       if (localStorage.getItem('theme') == 'dark') stylesheet = "/static/styleColorsDark.css";
+      console.log(stylesheet);
       document.getElementById("pageColors").setAttribute("href", stylesheet);
       axisUpdated()
     }

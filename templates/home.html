@@ -79,8 +79,13 @@
 
 {% block script %}
 <script>
-  const drawColor = () => getComputedStyle(document.documentElement).getPropertyValue('--c_draw');
-  const compassImage = () => getComputedStyle(document.documentElement).getPropertyValue('--img_compass');
+
+  const drawColor = () => getComputedStyle(document.documentElement).getPropertyValue('--c_draw')
+  const compassImage = () => getComputedStyle(document.documentElement).getPropertyValue('--img_compass')
+
+  window.addEventListener('load', () => {
+    //console.log(compassImage());
+  })
 
   console.log(getComputedStyle(document.documentElement).getPropertyValue("--c_draw") );
 
@@ -88,15 +93,18 @@
 
   const context = document.querySelector("#compassCanvas").getContext("2d");
   const image = new Image();
-  image.src = compassImage().trim();
-  image.addEventListener("load", () => {
-    context.drawImage(image, 0, 0, 800, 562);
-    axisUpdated();
-  });
+  window.addEventListener('load', () => {
+    image.src = compassImage();
+    image.addEventListener("load", () => {
+      context.drawImage(image, 0, 0, 800, 562);
+      axisUpdated();
+    });
+  })
 
   function axisUpdated()  {
+    image.src = compassImage();
     context.clearRect(0, 0, 800, 562);
-    console.log("drawing image: ", image);
+    //console.log("drawing image: ", image);
     context.drawImage(image, 0, 0, 800, 562);
 
     if (document.querySelector("[id=teacherCheckbox]").checked) {
@@ -153,16 +161,18 @@
       } else {
         localStorage.setItem('theme', 'dark')
       }
-
       setTheme()
   }
   function setTheme() {
     let stylesheet = "/static/styleColorsLight.css";  // Light theme is default
     if (localStorage.getItem('theme') == 'dark') stylesheet = "/static/styleColorsDark.css";
+    console.log(stylesheet);
     document.getElementById("pageColors").setAttribute("href", stylesheet);
     axisUpdated()
   }
   window.addEventListener("onLoad", setTheme() );
+
+
 
   // --------------------
 </script>

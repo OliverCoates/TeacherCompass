@@ -87,9 +87,23 @@
     //console.log(compassImage());
   })
 
+  //alert(Object.values({{teacher_averages|safe}}))
+
   console.log(getComputedStyle(document.documentElement).getPropertyValue("--c_draw") );
 
   var teacher_averages = {{teacher_averages|safe}}
+
+  for([key, val] of Object.entries(teacher_averages)) {
+    // pre add values
+    console.log(key);
+
+    val[0] = parseFloat(val[0]) * 21.6 + 303;
+    //console.log("X: " + val[0])
+    val[1] = -parseFloat(val[1]) * 21.6 + 281;
+    //console.log("Y: " + val[1])
+    val[2] = parseFloat(val[2]) * 21.6 + 281;
+    //console.log("Z: " + val[2])
+  }
 
   const context = document.querySelector("#compassCanvas").getContext("2d");
   const image = new Image();
@@ -112,9 +126,9 @@
       const teacherValues = teacher_averages[reqTeacherCode];
 
       context.beginPath();
-      const posX = parseFloat(teacherValues[0]) * 21.6 + 303;
-      const posY = -parseFloat(teacherValues[1]) * 21.6 + 281;
-      const posZ = parseFloat(teacherValues[2]) * 21.6 + 281;
+      const posX = teacherValues[0];
+      const posY = teacherValues[1];
+      const posZ = teacherValues[2];
       context.fillStyle = drawColor();
 
       context.font = "15px Arial";
@@ -130,16 +144,18 @@
         {# console.log(key, val); #}
         context.beginPath();
 
-        const posX = parseFloat(val[0]) * 21.6 + 303;
-        const posY = -parseFloat(val[1]) * 21.6 + 281;
-        const posZ = parseFloat(val[2]) * 21.6 + 281;
+
+        const posX = val[0];
+        const posY = val[1];
+        const posZ = val[2];
         context.fillStyle = drawColor();
 
+
         context.font = "15px Arial";
-        context.arc(posX , posY , 5, 0, 2 * Math.PI);
-        context.fillText(key, posX + 10, posY + 5);
-        context.arc(664, posZ, 5, 0, 2 * Math.PI);
-        context.fillText(key, 674, posZ + 5);
+        context.arc(posX , posY , 3, 0, 2 * Math.PI);
+        context.fillText(key, posX + 7, posY + 2);
+        context.arc(664, posZ, 3, 0, 2 * Math.PI);
+        context.fillText(key, 670, posZ +5);
 
         context.fill();
       }
@@ -147,13 +163,9 @@
 
   };
 
-  function drawPositions()  {
 
-    console.log(">>> ", teacher);
-  };
 
   // THEME:
-
   function changeTheme() {
       // theme = theme === 'light' ? 'dark' : 'light'
       if (localStorage.getItem('theme') === 'dark') {
@@ -166,14 +178,13 @@
   function setTheme() {
     let stylesheet = "/static/styleColorsLight.css";  // Light theme is default
     if (localStorage.getItem('theme') == 'dark') stylesheet = "/static/styleColorsDark.css";
-    console.log(stylesheet);
+    //console.log(stylesheet);
     document.getElementById("pageColors").setAttribute("href", stylesheet);
     axisUpdated()
   }
   window.addEventListener("onLoad", setTheme() );
-
-
-
   // --------------------
+
+
 </script>
 {% endblock %}

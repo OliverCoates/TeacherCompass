@@ -80,6 +80,8 @@
 {% block script %}
 <script>
 
+
+
   const drawColor = () => getComputedStyle(document.documentElement).getPropertyValue('--c_draw')
   const compassImage = () => getComputedStyle(document.documentElement).getPropertyValue('--img_compass')
 
@@ -88,22 +90,44 @@
   })
 
   //alert(Object.values({{teacher_averages|safe}}))
+  //console.log(getComputedStyle(document.documentElement).getPropertyValue("--c_draw") );
 
-  console.log(getComputedStyle(document.documentElement).getPropertyValue("--c_draw") );
+  class TeacherPoint {
+    constructor (code, average) {
+      this.name = code;
+      this.code = code;
+
+      var [x, y, z] = average;
+      this.x = parseFloat(x) * 21.6 + 303;
+      this.y = -parseFloat(y) * 21.6 + 281;
+      this.z = parseFloat(z) * 21.6 + 281;
+    }
+
+    draw (context, Color, radius) {
+      context.beginPath();
+      context.fillStyle = drawColor();
+
+      context.font = "15px Arial";
+      context.arc(this.x , this.y , 3, 0, radius * Math.PI);
+      context.fillText(this.code, this.x + 7, this.y + 2);
+      context.arc(664, this.z, 3, 0, radius * Math.PI);
+      context.fillText(this.code, 670, this.z +5);
+
+      context.fill();
+    }
+  }
 
   var teacher_averages = {{teacher_averages|safe}}
+  var teacher_points = []
+
+  for ([key,val] of Object.entries(teacher_averages)) {
+    teacher_points.push(new TeacherPoint(key, val))
+  }
 
   for([key, val] of Object.entries(teacher_averages)) {
     // pre add values
-    console.log(key);
 
-    val[0] = parseFloat(val[0]) * 21.6 + 303;
-    //console.log("X: " + val[0])
-    val[1] = -parseFloat(val[1]) * 21.6 + 281;
-    //console.log("Y: " + val[1])
-    val[2] = parseFloat(val[2]) * 21.6 + 281;
-    //console.log("Z: " + val[2])
-  }
+    }
 
   const context = document.querySelector("#compassCanvas").getContext("2d");
   const image = new Image();
@@ -123,41 +147,17 @@
 
     if (document.querySelector("[id=teacherCheckbox]").checked) {
       const reqTeacherCode = document.querySelector("[id=teacherFilerBy]").value;
-      const teacherValues = teacher_averages[reqTeacherCode];
 
-      context.beginPath();
-      const posX = teacherValues[0];
-      const posY = teacherValues[1];
-      const posZ = teacherValues[2];
-      context.fillStyle = drawColor();
+      let point = teacher_points.find(function(e) {
+        return e.code === reqTeacherCode;
+      })
 
-      context.font = "15px Arial";
-      context.arc(posX , posY , 5, 0, 2 * Math.PI);
-      context.fillText(reqTeacherCode, posX + 10, posY + 5);
-      context.arc(664, posZ, 5, 0, 2 * Math.PI);
-      context.fillText(reqTeacherCode, 674, posZ + 5);
-
-      context.fill();
+      point.draw(context, drawColor(), 2)
     } else {
       // Draw all the teachers on the canvas
-      for([key, val] of Object.entries(teacher_averages)) {
-        {# console.log(key, val); #}
-        context.beginPath();
+      for(point of teacher_points) {
+        point.draw(context, drawColor(), 2)
 
-
-        const posX = val[0];
-        const posY = val[1];
-        const posZ = val[2];
-        context.fillStyle = drawColor();
-
-
-        context.font = "15px Arial";
-        context.arc(posX , posY , 3, 0, 2 * Math.PI);
-        context.fillText(key, posX + 7, posY + 2);
-        context.arc(664, posZ, 3, 0, 2 * Math.PI);
-        context.fillText(key, 670, posZ +5);
-
-        context.fill();
       }
     }
 

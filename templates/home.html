@@ -28,6 +28,12 @@
       style="border:0px;">
       Your browser does not support the canvas element
       </canvas>
+
+      <br>
+      <div>
+        <!-- Leave this blank -->
+        <p id="teacherNameDisplay"></p>
+      </div>
     </div>
 
     <!-- Text -->
@@ -80,7 +86,7 @@
 {% block script %}
 <script>
 
-
+  var selectedTeacher = "none";
 
   const drawColor = () => getComputedStyle(document.documentElement).getPropertyValue('--c_draw')
   const compassImage = () => getComputedStyle(document.documentElement).getPropertyValue('--img_compass')
@@ -94,15 +100,16 @@
 
   class TeacherPoint {
     constructor (code, average) {
-      this.name = code;
+
       this.code = code;
 
-      var [x, y, z] = average;
+      var [x, y, z, name] = average;
       this.x = parseFloat(x) * 21.6 + 303;
       this.y = -parseFloat(y) * 21.6 + 281;
       this.z = parseFloat(z) * 21.6 + 281;
-    }
+      this.name = name;
 
+    };
     draw (context, Color, radius) {
       context.beginPath();
       context.fillStyle = drawColor();
@@ -116,6 +123,8 @@
       context.fill();
     }
   }
+
+
 
   var teacher_averages = {{teacher_averages|safe}}
   var teacher_points = []
@@ -131,6 +140,61 @@
 
   const context = document.querySelector("#compassCanvas").getContext("2d");
   const image = new Image();
+
+  const canvas = document.querySelector("#compassCanvas");
+
+  const teacherNameDisplay = document.querySelector("#teacherNameDisplay")
+
+  canvas.addEventListener("mousemove", function(e)
+  {
+    var rect = canvas.getBoundingClientRect();
+    //console.log("X > " + parseFloat(e.clientX - rect.left) + " | Y > " + parseFloat(e.clientY - rect.top));
+    //console.log(teacher_points);
+
+    var count = teacher_points.length;
+    for (var i = 0; i < count; i++) {
+      var x = teacher_points[i].x;
+      var y = teacher_points[i].y;
+      var z = teacher_points[i].z;
+
+      var mouseX = parseFloat(e.clientX - rect.left);
+      var mouseY = parseFloat(e.clientY - rect.top);
+
+      selectedTeacher = "none";
+      if (!document.querySelector("[id=teacherCheckbox]").checked)
+      {
+        // Check the 2d plane
+        if ((x - 4) < mouseX && mouseX < (x + 4) && (y - 4) < mouseY && mouseY < (y + 4))
+        {
+          //alert("Triggered: " + teacher_points[i].name);
+          console.log("Triggered "+ teacher_points[i].name);
+          selectedTeacher = teacher_points[i];
+        }
+
+        // Check the 1d z axis
+        if ((662 - 4) < mouseX && mouseX < (662 + 4) && (z - 4) < mouseY && mouseY < (z + 4))
+        {
+          selectedTeacher = teacher_points[i];
+        }
+      }
+
+
+    // Update the menu:
+    //console.log(selectedTeacher);
+    if (selectedTeacher == "none")
+    {
+      teacherNameDisplay.innerHTML = "";
+    }
+    else {
+      teacherNameDisplay.innerHTML = selectedTeacher.code + " | " + selectedTeacher.name;
+    }
+
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+  })0
+
   window.addEventListener('load', () => {
     image.src = compassImage();
     image.addEventListener("load", () => {
@@ -157,13 +221,9 @@
       // Draw all the teachers on the canvas
       for(point of teacher_points) {
         point.draw(context, drawColor(), 2)
-
       }
     }
-
   };
-
-
 
   // THEME:
   function changeTheme() {

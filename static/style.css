@@ -38,6 +38,30 @@
   margin-top: 0em;
 }
 
+.teacherDisplay {
+  position: fixed;
+  box-shadow: 3px 3px 7px 1px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 3px 3px 7px 1px rgba(0,0,0,0.3);
+  -moz-box-shadow: 3px 3px 7px 1px rgba(0,0,0,0.3);
+  border-radius: 4px;
+  display: none;
+  /*border-style: solid;*/
+  /* width: 200px; */
+  background-color: var(--c_background);
+  color: var(--c_text);
+  /*border-width: 1px;*/
+  /*border-color: var(--c_text); */
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+#teacherNameDisplay {
+  margin-top: 0px;
+  margin-bottom:5px;
+}
+
 body {
   font-family: Hind;
   background-color: var(--c_background);

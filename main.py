@@ -72,6 +72,7 @@ class Teachers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     teacher_code = db.Column(db.String, nullable = False)
     teacher_name = db.Column(db.String)
+    teacher_photo = db.Column(db.String)
     # valueX = db.Column(db.Integer)
     # valueY = db.Column(db.Integer)
     # valueZ = db.Column(db.Integer)
@@ -112,11 +113,11 @@ def home():
     teacher_averages = {}
     teachers = [teacher.teacher_code for teacher in Teachers.query.all()]
     for teacher in Teachers.query.all():
-        teacher_averages[teacher.teacher_code] = [teacher.valueX, teacher.valueY, teacher.valueZ, teacher.teacher_name]
+        teacher_averages[teacher.teacher_code] = [teacher.valueX, teacher.valueY, teacher.valueZ, teacher.teacher_name, teacher.teacher_photo]
 
 
     # teachers = {teacher.teacher_code: (teacher.valueX, teacher.valueY, teacher.valueX) for teachers}
-    return render_template('home.html', teachers = teachers, teacher_averages=teacher_averages)
+    return render_template('home.html', teachers = teachers, teacher_averages=(teacher_averages))
 
 
 @app.route('/login')
